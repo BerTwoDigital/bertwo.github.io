@@ -11,149 +11,275 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
-        /* --- GENEL SAYFA YAPISI --- */
-        :root {
-            --bg-color: #f8f9fa;
-            --text-color: #2d3748;
-            --accent-color: #3182ce;
-            --code-bg: #1e1e1e;
-            --card-bg: #ffffff;
-        }
+    /* --- GENEL SAYFA YAPISI (VARSAYILAN: AÇIK MOD) --- */
+    :root {
+        --bg-color: #f8f9fa;
+        --text-color: #2d3748;
+        --heading-color: #1a202c;
+        --accent-color: #3182ce;
+        --code-bg: #1e1e1e;
+        --card-bg: #ffffff;
+        --border-color: #e2e8f0;
+    }
 
-        body {
-            margin: 0;
-            padding: 40px 20px;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.7;
-            font-size: 16px;
-        }
+    /* --- KOYU MOD (DARK MODE) TANIMLARI --- */
+    [data-theme="dark"] {
+        --bg-color: #171923;      /* Çok koyu gri arka plan */
+        --text-color: #cbd5e0;    /* Açık gri metin */
+        --heading-color: #f7fafc; /* Beyaz başlıklar */
+        --accent-color: #63b3ed;  /* Daha parlak mavi */
+        --code-bg: #2d3748;       /* Kod arka planı */
+        --card-bg: #2d3748;       /* Kağıt rengi koyulaşır */
+        --border-color: #4a5568;
+    }
 
-        /* İçeriği Ortala ve Kağıt Görünümü Ver */
-        body > div { 
-            max-width: 800px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 60px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
+    body {
+        margin: 0;
+        padding: 40px 20px;
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.7;
+        font-size: 16px;
+        transition: background-color 0.3s, color 0.3s; /* Yumuşak geçiş */
+    }
 
-        /* --- BAŞLIKLAR --- */
-        h1, h2, h3, h4, h5, h6 {
-            font-weight: 800;
-            color: #1a202c;
-            margin-top: 1.5em;
-            margin-bottom: 0.5em;
-            letter-spacing: -0.025em;
-        }
+    /* İçeriği Ortala ve Kağıt Görünümü Ver */
+    body > div { 
+        max-width: 800px;
+        margin: 0 auto;
+        background: var(--card-bg);
+        padding: 60px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: background-color 0.3s;
+    }
 
-        /* Orijinal kodda h1 çok sık kullanılmış, onları görsel olarak hiyerarşiye sokalım */
-        h1[node] { 
-            font-size: 1.25rem !important; /* Normal metin gibi görünen h1'leri küçült */
-            font-weight: 400 !important;
-            color: #4a5568 !important;
-            margin-top: 0.5em !important;
-            margin-bottom: 0.5em !important;
-            line-height: 1.6 !important;
-        }
+    /* --- BAŞLIKLAR --- */
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 800;
+        color: var(--heading-color); /* Rengi değişkene bağladık */
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+        letter-spacing: -0.025em;
+    }
 
-        /* Gerçek Bölüm Başlıkları (DERS numaraları vb.) */
-        p[node] {
-            font-weight: 800;
-            font-size: 1.5rem;
-            color: var(--accent-color);
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 10px;
-            margin-top: 40px;
-            margin-bottom: 20px;
-        }
+    /* Orijinal kodda h1 çok sık kullanılmış, düzeltme */
+    h1[node] { 
+        font-size: 1.25rem !important;
+        font-weight: 400 !important;
+        color: var(--text-color) !important; /* Rengi değişkene bağladık */
+        opacity: 0.8;
+        margin-top: 0.5em !important;
+        margin-bottom: 0.5em !important;
+        line-height: 1.6 !important;
+    }
 
-        h2[node] { /* Alt başlıklar */
-            font-size: 1.5rem !important;
-            color: #2d3748;
-            border-left: 4px solid var(--accent-color);
-            padding-left: 12px;
-        }
+    /* Gerçek Bölüm Başlıkları */
+    p[node] {
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: var(--accent-color);
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 10px;
+        margin-top: 40px;
+        margin-bottom: 20px;
+    }
 
-        h3[node] {
-            font-size: 1.2rem !important;
-            font-weight: 600;
-        }
+    h2[node] { /* Alt başlıklar */
+        font-size: 1.5rem !important;
+        color: var(--heading-color);
+        border-left: 4px solid var(--accent-color);
+        padding-left: 12px;
+    }
 
-        /* --- KOD BLOKLARI --- */
-        /* Karmaşık div yapısını temizleyip kod bloğuna benzetiyoruz */
-        div[data-testid="code-block"] {
-            margin: 25px 0 !important;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
+    h3[node] {
+        font-size: 1.2rem !important;
+        font-weight: 600;
+    }
 
-        /* Kod başlığı (R dili etiketi) */
-        div[data-testid="code-block"] > div > div:first-child {
-            background-color: #2d2d2d !important; /* Koyu gri header */
-            color: #fff;
-            padding: 8px 16px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid #444;
-        }
+    /* --- KOD BLOKLARI --- */
+    div[data-testid="code-block"] {
+        margin: 25px 0 !important;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
 
-        /* Kodun kendisi */
-        .shiki {
-            background-color: var(--code-bg) !important;
-            padding: 20px !important;
-            margin: 0 !important;
-            overflow-x: auto;
-            border: none !important;
-        }
+    div[data-testid="code-block"] > div > div:first-child {
+        background-color: #1a202c !important;
+        color: #fff;
+        padding: 8px 16px;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #444;
+    }
 
-        pre {
-            margin: 0;
-            font-family: 'Fira Code', monospace !important;
-            font-size: 0.9rem;
-        }
+    .shiki {
+        background-color: var(--code-bg) !important;
+        padding: 20px !important;
+        margin: 0 !important;
+        overflow-x: auto;
+        border: none !important;
+    }
 
-        code {
-            font-family: 'Fira Code', monospace !important;
-        }
+    pre, code {
+        font-family: 'Fira Code', monospace !important;
+    }
+    
+    .line { display: block; min-height: 1.2em; }
 
-        /* Kod satırları */
-        .line {
-            display: block;
-            min-height: 1.2em; /* Boş satırlar için */
-        }
+    /* Gizlenecekler */
+    button:not(#theme-toggle), .action-buttons, .sticky > div > button, svg.lucide {
+        display: none !important;
+    }
+    div[data-testid="code-block"] .sticky { display: none !important; }
 
-        /* --- GİZLENECEK ÖGELER --- */
-        /* Kopyalama butonları ve chat arayüzü kalıntıları */
-        button, 
-        .action-buttons, 
-        .sticky > div > button,
-        svg.lucide {
-            display: none !important;
-        }
-        
-        /* Copy butonu kapsayıcısını gizle ama header kalsın */
-        div[data-testid="code-block"] .sticky {
-            display: none !important;
-        }
+    /* --- MOD DEĞİŞTİRME BUTONU STİLİ --- */
+    #theme-toggle {
+        display: block !important; /* Gizleme kuralından kurtar */
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 9999;
+        transition: transform 0.2s, background-color 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #theme-toggle:hover {
+        transform: scale(1.1);
+    }
 
-        /* --- RESPONSIVE --- */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            body > div {
-                padding: 20px;
-            }
-        }
-    </style>
+    @media (max-width: 768px) {
+        body { padding: 10px; }
+        body > div { padding: 20px; }
+        #theme-toggle { top: 10px; right: 10px; width: 40px; height: 40px; font-size: 20px; }
+    }
+/* --- SOL ÜST BUTON (VİZE NOTLARI) --- */
+    .left-nav-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background-color: var(--accent-color);
+        color: #fff;
+        padding: 12px 20px;
+        border-radius: 8px;
+        text-decoration: none; /* Alt çizkiyi kaldır */
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 9999;
+        transition: transform 0.2s, background-color 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .left-nav-btn:hover {
+        transform: translateY(-2px);
+        background-color: #2b6cb0; /* Biraz daha koyu mavi */
+    }
+
+    /* --- MENÜ KARTLARI (2 ADET DİV) --- */
+    .menu-container {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px; /* Ana kağıt ile ara boşluk */
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .link-card {
+        flex: 1;
+        min-width: 250px;
+        background: var(--card-bg);
+        padding: 20px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: var(--text-color);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid var(--accent-color); /* Sol tarafı renkli çizgi */
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .link-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .link-card span {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    /* Ok işareti */
+    .link-card::after {
+        content: '→';
+        font-size: 1.5rem;
+        color: var(--accent-color);
+    }
+</style>
 </head>
 <body>
+
+<a href="vize-notlari.html" class="left-nav-btn">
+        📝 Vize Notları
+    </a>
+
+
+
+    <div>
+        <h1>R Programlama Notlarım</h1>
+        </div>
+    <button id="theme-toggle" title="Koyu/Açık Mod">🌗</button>
+
+    <script>
+        const toggleBtn = document.getElementById('theme-toggle');
+        const htmlTag = document.documentElement;
+
+        // 1. Sayfa yüklendiğinde kayıtlı tercihi kontrol et
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+            htmlTag.setAttribute('data-theme', currentTheme);
+            updateButtonIcon(currentTheme);
+        }
+
+        // 2. Butona tıklanınca modu değiştir
+        toggleBtn.addEventListener('click', () => {
+            let theme = htmlTag.getAttribute('data-theme');
+            
+            if (theme === 'dark') {
+                theme = 'light';
+                htmlTag.removeAttribute('data-theme');
+            } else {
+                theme = 'dark';
+                htmlTag.setAttribute('data-theme', 'dark');
+            }
+
+            // Tercihi tarayıcıya kaydet (sayfa yenilenince gitmesin)
+            localStorage.setItem('theme', theme);
+            updateButtonIcon(theme);
+        });
+
+        // İkonu güncelleme fonksiyonu
+        function updateButtonIcon(theme) {
+            toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+        }
+    </script>
+
 
     <div class="relative group flex flex-col justify-center w-full max-w-[var(--content-max-width)] pb-0.5 items-start" id="response-62cf660d-c028-4dee-b7a0-94e96c4e0f7f" style="scroll-margin-top: var(--scroll-margin-top, 0px);"><div dir="auto" class="message-bubble relative rounded-3xl text-primary min-h-7 prose dark:prose-invert break-words prose-p:opacity-100 prose-strong:opacity-100 prose-li:opacity-100 prose-ul:opacity-100 prose-ol:opacity-100 prose-ul:my-1 prose-ol:my-1 prose-li:my-2 last:prose-li:mb-3 prose-li:ps-1 prose-li:ms-1 w-full max-w-none"><div class="relative"><div class="relative"><div class="relative response-content-markdown markdown [&amp;_a:not(.not-prose)]:text-current [&amp;_a:not(.not-prose):hover]:text-primary [&amp;_a:not(.not-prose):hover]:decoration-primary [&amp;_a:not(.not-prose)]:underline [&amp;_a:not(.not-prose)]:decoration-primary/30 [&amp;_a:not(.not-prose)]:underline-offset-2 [&amp;_h2:not(.not-prose):first-child]:mt-0 [&amp;_h3:not(.not-prose):first-child]:mt-0 [&amp;_h4:not(.not-prose):first-child]:mt-0"><p dir="auto" class="break-words last:mb-0" node="[object Object]" style="white-space: pre-wrap;">-8. DERS</p>
 <h2 dir="auto" class="text-2xl mt-[1.5em]" node="[object Object]">R'de grafikler</h2>
